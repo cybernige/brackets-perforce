@@ -1,10 +1,10 @@
 {
-    "name": "joshgalvin.perforce",
-    "title": "Perforce",
-    "description": "Enables Perforce source control integration (no GUI)",
-    "homepage": "https://github.com/JoshGalvin/brackets-perforce",
-    "version": "1.0.1",
-    "author": "Joshua Galvin <joshuagalvin@gmail.com>",
+    "name": "brackets-perforce",
+    "title": "Perforce extension",
+    "description": "Enables Perforce source control integration (no GUI) - based on work by joshua galvin",
+    "homepage": "https://github.com/cybernige/brackets-perforce",
+    "version": "1.0.0",
+    "author": "Nigel Thorne nigel.p.thorne@gmail.com (https://github.com/cybernige)",
     "license": "MIT",
     "engines": {
         "brackets": ">=0.29.0"

@@ -10,24 +10,24 @@ define(function (require, exports, module) {
             });
     
     module.exports = {
-        checkout: function (filepath) {
+        checkout: function (filepath, workspace) {
             return init.pipe(function () { 
-               return nodeConnection.domains.perforce.checkout(filepath); 
+               return nodeConnection.domains.perforce.checkout(filepath, workspace); 
             });
         },
-        add: function (filepath) {
+        add: function (filepath, workspace) {
             return init.pipe(function () { 
-               return nodeConnection.domains.perforce.add(filepath); 
+               return nodeConnection.domains.perforce.add(filepath, workspace); 
             });
         },
-        "delete": function (filepath) {
+        "delete": function (filepath, workspace) {
             return init.pipe(function () { 
-               return nodeConnection.domains.perforce.delete(filepath); 
+               return nodeConnection.domains.perforce.delete(filepath, workspace); 
             });
         }, 
-        revert: function (filepath) {
+        revert: function (filepath, workspace) {
             return init.pipe(function () { 
-               return nodeConnection.domains.perforce.revert(filepath); 
+               return nodeConnection.domains.perforce.revert(filepath, workspace); 
             });
         }
     };
