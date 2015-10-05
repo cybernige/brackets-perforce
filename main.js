@@ -10,37 +10,27 @@ define(function (require, exports, module) {
 		ProjectManager 	= brackets.getModule("project/ProjectManager"),
         Menus          	= brackets.getModule("command/Menus"),
 		PreferencesManager = brackets.getModule("preferences/PreferencesManager"),
-		contextMenu		= Menus.getContextMenu(Menus.ContextMenuIds.PROJECT_MENU);
+        ExtensionLoader = brackets.getModule("utils/ExtensionLoader"),
+		contextMenu		= Menus.getContextMenu(Menus.ContextMenuIds.PROJECT_MENU),
+		CONFIG_NAME 	= "config.json",
+		rootPath		= "",
+		p4;
 
     // Function to run when the menu item is clicked
 
 
-	function doCheckout(xml, document) {
-		var p4 = require("p4"),
-			filePath = document.file.fullPath,
-			parser = new DOMParser(),
-			p4Workspace,
-			xmlDoc;
+	function doCheckout(document) {
+		var filePath = document.file.fullPath,
+			p4 = require("p4"),
+			splitRootArray = [],
+			splitFilePathArray = [],
+			p4Workspace = rootPath;
 
-		xmlDoc = parser.parseFromString(xml, "text/xml");
-		p4Workspace = xmlDoc.firstElementChild.firstElementChild.textContent;
+		splitRootArray = rootPath.split("/");
+		splitFilePathArray = filePath.split("/");
+		p4Workspace = splitFilePathArray[splitRootArray.length];
 		p4.checkout(filePath, p4Workspace).fail(p4.add(filePath, p4Workspace));
-		console.log("Checked out " + filePath);
-	}
-
-	function getPerforceProject(document) {
-		var root,
-			file,
-			promise;
-
-		root = ProjectManager.getProjectRoot().fullPath;
-		file = FileSystem.getFileForPath(root + ".project");
-
-		promise = FileUtils.readAsText(file).done(function (text) {
-			doCheckout(text, document);
-		}).fail(function (errorCode) {
-			//console.log("ERROR File " + errorCode);
-		});
+		console.log("Checked out " + filePath + " " + p4Workspace);
 	}
 
     function checkoutFile() {
@@ -48,14 +38,25 @@ define(function (require, exports, module) {
 			document = DocumentManager.getCurrentDocument();
 
 		if (activeEditor && document === activeEditor.document) {
-			getPerforceProject(document);
+			doCheckout(document);
 		}
 	}
 
 	brackets.getModule("utils/AppInit").appReady(function () {
-        var isAutoCheckout = false,
-			p4 = require("p4"),
-			prefs = PreferencesManager.getExtensionPrefs("brackets-perforce");
+		var config = {},
+			extensionPath =  ExtensionLoader.getUserExtensionPath() + "/brackets-perforce/",
+		    file = FileSystem.getFileForPath(extensionPath + CONFIG_NAME),
+			isAutoCheckout = false,
+			prefs = PreferencesManager.getExtensionPrefs("brackets-perforce"),
+			promise = FileUtils.readAsText(file);  // completes asynchronously
+
+        promise.done(function (text) {
+			config = JSON.parse(text);
+			rootPath = config.root;
+        })
+        .fail(function (errorCode) {
+           console.log("failed to read " + CONFIG_NAME + " " + errorCode);
+        });
 
 		if (prefs && prefs.get("auto_checkout_enabled")) {
 			isAutoCheckout = prefs.get("auto_checkout_enabled");

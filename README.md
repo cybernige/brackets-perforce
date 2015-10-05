@@ -7,12 +7,14 @@ Extension adds a Checkout option to the context menu.
 
 This allows checkout of a file from a perforce workspace.
 
-The workspace is picked up from the perforce .project file in your project root folder.
-
-When working on a project, you will need to select File / Open Folder and navigate to your perforce root directory.
+Root folder of the perforce workspace is defined in config.json.
 
 File is checked out to the default changelist.
 
 Version: 1.1 23-09-2015
 
 Added auto checkout option to Preference service so files can be auto checked out when edited.
+
+Version: 1.2 05-10-2015
+
+Pick up root folder form config.json and derives workspace name from folder name under parent
